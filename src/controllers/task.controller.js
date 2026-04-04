@@ -79,6 +79,10 @@ class TaskController {
             const task_id = req.params.task_id
             const { status } = req.body
             const updateData = { status: status }
+            const validStatuses = ['PENDING', 'IN_PROGRESS', 'COMPLETED']
+            if(!validStatuses.includes(status)){
+                return res.status(400).json({error: 'El estado proporcionado no es válido. Debe ser PENDING, IN_PROGRESS o COMPLETED'})
+            }
             if(status === 'COMPLETED'){
                 updateData.finish_date = new Date()
             }
@@ -89,7 +93,7 @@ class TaskController {
             res.status(200).json(updatedStatusTask)
         }
         catch(error){
-            res.status(500).json({error: 'Error al actualizar el estado y fecha de finalización de la tarea: ' + error.message})
+            res.status(500).json({error: 'Error al actualizar el estado de la tarea: ' + error.message})
         }
     }
     async deleteTask(req, res){
