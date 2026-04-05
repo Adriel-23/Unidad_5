@@ -1,13 +1,28 @@
 import missionRepository from "../repositories/mission.repository.js";
 import Task from "../models/task.model.js";
+import userRepository from "../repositories/user.repository.js";
 
 class MissionController {
     async createMission(req, res){
         try{
-            const userId = req.params.user_id
+            const {user_id} = req.params
             const { title, description } = req.body
+            const userFound = await userRepository.findUserById(user_id)
+            if(!userFound){
+                return res.send({
+                    ok: false,
+                    status: 404,
+                    message: 'Usuario no encontrado'})
+            }
+            const missionExisting = await missionRepository.findMissionsByUserId(user_id)
+            if(missionExisting.some(mission => mission.title === title && mission.description === description)){
+                return res.send({
+                    ok: false,
+                    status: 400,
+                    message: 'Esta mision ya existe para este usuario'})
+            }
             const missionData = {
-                fk_user_id: userId,
+                fk_user_id: user_id,
                 title,
                 description
             }
@@ -20,8 +35,8 @@ class MissionController {
     }
     async getMissionsByUserId(req, res){
         try{
-            const userId = req.params.user_id
-            const userMisisons = await missionRepository.findMissionsByUserId(userId)
+            const {user_id} = req.params
+            const userMisisons = await missionRepository.findMissionsByUserId(user_id)
             res.status(200).json(userMisisons)
         }
         catch(error){

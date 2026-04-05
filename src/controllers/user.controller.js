@@ -32,7 +32,17 @@ class Usercontroller {
             if(!foundUser || foundUser.password !== password){
                 return res.status(401).json({error: 'Tu email o contraseña son incorrectos'})
             }
-            res.status(200).json({message: 'Inicio de sesión exitoso', user: foundUser._id})
+            res.status(200).send({
+                ok: true,
+                status: 200,
+                message: 'Inicio de sesión exitoso',
+                user: {
+                    id: foundUser._id,
+                    name: foundUser.name,
+                    email: foundUser.email,
+                    created_at: foundUser.createdAt
+                }
+            })
         }
         catch(error){
             res.status(500).json({error: 'Error al iniciar sesión. ' + error.message})
