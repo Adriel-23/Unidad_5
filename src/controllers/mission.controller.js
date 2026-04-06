@@ -1,6 +1,8 @@
 import missionRepository from "../repositories/mission.repository.js";
 import Task from "../models/task.model.js";
 import userRepository from "../repositories/user.repository.js";
+import ServerError from "../helpers/serverError.helper.js";
+
 
 class MissionController {
     async createMission(req, res){
@@ -9,17 +11,11 @@ class MissionController {
             const { title, description } = req.body
             const userFound = await userRepository.findUserById(user_id)
             if(!userFound){
-                return res.send({
-                    ok: false,
-                    status: 404,
-                    message: 'Usuario no encontrado'})
+                throw new ServerError('Usuario no encontrado', 404)
             }
             const missionExisting = await missionRepository.findMissionsByUserId(user_id)
             if(missionExisting.some(mission => mission.title === title && mission.description === description)){
-                return res.send({
-                    ok: false,
-                    status: 400,
-                    message: 'Esta mision ya existe para este usuario'})
+                throw new ServerError('Esta misión ya existe para este usuario', 400)
             }
             const missionData = {
                 fk_user_id: user_id,
@@ -27,20 +23,47 @@ class MissionController {
                 description
             }
             const newMission = await missionRepository.createMission(missionData)
-            res.status(201).json(newMission)
+            res.status(201).send(newMission)
         }
         catch(error){
-            res.status(500).json({error: 'Error al crear la misión: ' + error.message})
+            if(error instanceof ServerError){
+                res.status(error.statusCode).send({
+                    ok: false,
+                    status: error.statusCode,
+                    message: error.message
+                })
+            } else {
+                res.status(500).json({
+                    ok: false,
+                    status: 500,
+                    message: 'Error al crear la misión: ' + error.message
+                })
+            }
         }
     }
     async getMissionsByUserId(req, res){
         try{
             const {user_id} = req.params
             const userMisisons = await missionRepository.findMissionsByUserId(user_id)
-            res.status(200).json(userMisisons)
+            if(userMisisons.length === 0){
+                throw new ServerError('No se encontraron misiones para este usuario', 404)
+            }
+            res.status(200).send(userMisisons)
         }
         catch(error){
-                res.status(500).json({error: 'Error al obtener misiones por ID de usuario: ' + error.message})
+            if(error instanceof ServerError){
+                res.status(error.statusCode).send({
+                    ok: false,
+                    status: error.statusCode,
+                    message: error.message
+                })
+            } else {
+                res.status(500).send({
+                    ok: false,
+                    status: 500,
+                    message: 'Error al obtener misiones por ID de usuario: ' + error.message
+                })
+            }
         }
     }
     async deleteMissionById(req, res){
@@ -49,12 +72,24 @@ class MissionController {
             await Task.deleteMany({ fk_mission_id: missionId })
             const deletedMission = await missionRepository.deleteMissionById(missionId)
             if(!deletedMission){
-                return res.status(404).json({error: 'Misión no encontrada'})
+                throw new ServerError('Misión no encontrada', 404)
             }
-            res.status(200).json({message: 'Misión eliminada exitosamente'})
+            res.status(200).send({message: 'Misión eliminada exitosamente'})
         }
         catch(error){
-            res.status(500).json({error: 'Error al eliminar la mision' + error.message})
+            if(error instanceof ServerError){
+                res.status(error.statusCode).send({
+                    ok: false,
+                    status: error.statusCode,
+                    message: error.message
+                })
+            } else {
+                res.status(500).send({
+                    ok: false,
+                    status: 500,
+                    message: 'Error al eliminar la misión: ' + error.message
+                })
+            }
         }
     }
 }
