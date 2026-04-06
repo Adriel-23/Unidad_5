@@ -13,7 +13,7 @@ missionRouter.get(
     (req, res) => { missionController.getMissionsByUserId(req, res) }
 )
 missionRouter.delete(
-    '/:mission_id',
+    '/:user_id/:mission_id',
     (req, res) => { missionController.deleteMissionById(req, res) }
 )
 
