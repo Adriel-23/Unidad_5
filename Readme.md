@@ -131,13 +131,13 @@ Deberá utilizar Postman u otro programa parecido para hacer peticiones HTPP. Co
     - *Exito, MongoDB Conectado*
 
     En caso de que MongoDB no se conecte y la terminal de un error **querySrv ECONNREFUSED***(Fallo en la resolución de registros DNS SRV)*, no se preocupe y siga los siguientes pasos:
-    1. Diríjase a su Cluster de MongoDB Atlas
-    2. Vaya a la sección de conexión y seleccione 'Drivers'.
-    3. Dónde figura su string de conexión(el que empieza por *mongodb+srv://*) hay una opción *SRV Connection String* encendida por defecto, desactívela.
-    4. Ahora la string de conexión debió haber sido reemplazada por una un poco mas larga, copie esta string nueva y diríjase a su **.env**.
-    5. Reemplace el string que pegó anteriormente en la MONGO_DB_URI= por su nueva String(Solo después del =, no reemplace el nombre de la variable completa).
-    6. Una vez hecho eso puede ir a la terminal y reinicar el proceso de correr (Ctrl+C para frenar el programa, `clear` para limpiar la consola y por ultimo `npm run dev`).
-    7. Ya deberia funcionar sin problemas, y puede usted poner a prueba el programa.
+    - **paso 1**. Diríjase a su Cluster de MongoDB Atlas
+    - **paso 2**. Vaya a la sección de conexión y seleccione 'Drivers'.
+    - **paso 3**. Dónde figura su string de conexión(el que empieza por *mongodb+srv://*) hay una opción *SRV Connection String* encendida por defecto, desactívela.
+    - **paso 4**. Ahora la string de conexión debió haber sido reemplazada por una un poco mas larga, copie esta string nueva y diríjase a su **.env**.
+    - **paso 5**. Reemplace el string que pegó anteriormente en la MONGO_DB_URI= por su nueva String(Solo después del =, no reemplace el nombre de la variable completa).
+    - **paso 6**. Una vez hecho eso puede ir a la terminal y reinicar el proceso de correr (Ctrl+C para frenar el programa, `clear` para limpiar la consola y por ultimo `npm run dev`).
+    - **paso 7**. Ya deberia funcionar sin problemas, y puede usted poner a prueba el programa.
 
 6. **Hacer Peticiones HTTP**
     Una vez corriendo el programa puede abrir Postman o su programa de preferencia y crear peticiones a la siguiente URL:
