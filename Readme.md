@@ -107,15 +107,17 @@ Deberá utilizar Postman u otro programa parecido para hacer peticiones HTPP. Co
     Deberá crear un archivo `.env` en la carpeta raíz del proyecto y agregar las siguientes variables:
 
     ```env
-    PORT=
-    MONGO_DB_URI=
-    MONGO_DB_NAME=
+    PORT= 8080
+    MONGO_DB_URI= mongodb+srv://<usuario>:<contraseña>@cluster0.mongodb.net/
+    MONGO_DB_NAME= Nombre_de_su_DB
+    JWT_SECRET_KEY= clave_hiper_mega_secreta_de_Pepito 
     ```
 
     En cada Variable luego del `=` se deberá llenar por las variables propias.
-    El PORT donde usted decida alojarlo.
-    El MONGO_DB_URI se llenará con el string que otorga MongoDB Atlas en su sección de conectar con la DB.
-    El MONGO_DB_NAME llevará el nombre que tiene su DB.
+    - **PORT**: El puerto donde usted decida alojarlo.(ej: 8080, 3000, 3001, etc).
+    - **MONGO_DB_URI**: Se llenará con el string que otorga MongoDB Atlas en su sección de conectar con la DB.
+    - **MONGO_DB_NAME**: Llevará el nombre que tiene su DB.
+    - **JWT_SECRET_KEY**: Puede ser cualquier palabra o frase secreta que usted elija. Esta se utilizará para encriptar los tokens de sesión.
 
 5. **Lanzar el servidor**
     Para poder correr el proyecto y utilizarlo para ponerlo a prueba se utiliza el siguiente comando en la *Terminal*:

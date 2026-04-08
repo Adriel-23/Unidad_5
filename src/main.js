@@ -4,6 +4,7 @@ import express from 'express';
 import missionRouter from './routes/mission.router.js';
 import authRouter from './routes/auth.router.js';
 import taskRouter from './routes/task.router.js';
+import errorHandling from './middlewares/errorHandling.middleware.js';
 
 
 connectMongoDB()
@@ -15,6 +16,9 @@ app.use(express.json({limit: '5gb'}));
 app.use('/api/missions', missionRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/tasks', taskRouter)
+
+
+app.use(errorHandling);
 
 
 app.listen(ENVIRONMENT.PORT, () => {
