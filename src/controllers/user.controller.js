@@ -1,14 +1,10 @@
 import userRepository from "../repositories/user.repository.js";
 import bcrypt from "bcrypt";
-<<<<<<< HEAD
 import jwt from "jsonwebtoken";
 import authService from "../services/auth.service.js";
 import ENVIRONMENT from "../config/environment.config.js";
 import mailTransporter from "../config/mail.config.js";
 import ServerError from "../helpers/serverError.helper.js";
-=======
-import authService from "../services/auth.service.js";
->>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
 
 class Usercontroller {
     async registerUser(req, res, next){
@@ -65,7 +61,6 @@ class Usercontroller {
                     authToken: authToken
                 }
             });
-<<<<<<< HEAD
         }
         catch(error){
             next(error);
@@ -94,10 +89,6 @@ class Usercontroller {
             if(error instanceof jwt.JsonWebTokenError){
                 return next(new ServerError('Token de verificación inválido', 401))
             }
-=======
-        }
-        catch(error){
->>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
             next(error);
         }
     }

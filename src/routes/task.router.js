@@ -7,47 +7,41 @@ const taskRouter = express.Router()
 
 taskRouter.post(
     '/:user_id/:mission_id',
-    authMiddleware.validateUser,
+    authMiddleware(['admin']),
     taskMiddleware.validateStatusFormat,
     taskController.createTask
 )
 taskRouter.get(
     '/:user_id/:mission_id',
-    authMiddleware.validateUser,
+    authMiddleware(['admin', 'free', 'premium']),
     taskMiddleware.validateTaskInMission,
     taskController.getTasksByMissionId
     
 )
 taskRouter.get(
     '/:user_id/detail/:task_id',
-    authMiddleware.validateUser,
+    authMiddleware(['admin', 'free', 'premium']),
     taskMiddleware.validateTaskExistence,
     taskController.getDetailTaskById
 )
 taskRouter.put(
     '/:user_id/:task_id',
-    authMiddleware.validateUser,
+    authMiddleware(['admin', 'premium']),
     taskMiddleware.validateTaskExistence,
     taskController.updateTask
 )
 taskRouter.patch(
     '/:user_id/:task_id/status',
-    authMiddleware.validateUser,
+    authMiddleware(['admin', 'free', 'premium']),
     taskMiddleware.validateStatusFormat,
     taskMiddleware.validateTaskExistence,
     taskController.updateStatusAndFinishDate
 )
 taskRouter.delete(
     '/:user_id/:task_id',
-<<<<<<< HEAD
-    (req, res) => {
-        taskController.deleteTask(req, res)
-    }
-=======
-    authMiddleware.validateUser,
+    authMiddleware(['admin']),
     taskMiddleware.validateTaskExistence,
     taskController.deleteTask
->>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
 )
 
 export default taskRouter;

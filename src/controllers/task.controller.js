@@ -26,12 +26,7 @@ class TaskController {
             next(error)
         }
     }
-<<<<<<< HEAD
     async getTasksByMissionId(req, res){
-=======
-
-    async getTasksByMissionId(req, res, next){
->>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
         try{
             const tasks = req.tasks
             res.status(200).json(tasks)

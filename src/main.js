@@ -5,18 +5,19 @@ import missionRouter from './routes/mission.router.js';
 import authRouter from './routes/auth.router.js';
 import taskRouter from './routes/task.router.js';
 import errorHandling from './middlewares/errorHandling.middleware.js';
-<<<<<<< HEAD
 import mailTransporter from './config/mail.config.js';
-=======
->>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
+import statusRouter from './routes/status.router.js';
 
 
 connectMongoDB()
 
 const app = express();
-
+/* 
+    Este es un middleware global que se encarga de revisar si el heaader de la petición es de tipo JSON.
+*/
 app.use(express.json({limit: '5gb'}));
 
+app.use('/api/status', statusRouter);
 app.use('/api/missions', missionRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/tasks', taskRouter)

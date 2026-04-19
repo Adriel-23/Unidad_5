@@ -16,7 +16,7 @@ class MissionController {
     }
     async getMissionsByUserId(req, res, next){
         try{
-            const {user_id} = req.params
+            const user_id = req.user.user_id
             const userMisisons = await missionRepository.findMissionsByUserId(user_id)
             if(userMisisons.length === 0){
                 throw new ServerError('No se encontraron misiones para este usuario', 404)
