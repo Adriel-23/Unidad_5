@@ -12,8 +12,6 @@ class TaskRespository {
             throw new Error('Error al crear la tarea: ' + error.message)
         }
     }
-<<<<<<< HEAD
-=======
     async getTasksByMissionId(missionId){
         try{
             const tasks = await Task.find({ fk_mission_id: missionId})
@@ -59,7 +57,6 @@ class TaskRespository {
             throw new Error ('Error al eliminar la tarea: ' + error.message)
         }
     }
->>>>>>> 396dcb3dd1135e683538e9518f8ee1deaf1e224f
 }
 
 export default new TaskRespository();

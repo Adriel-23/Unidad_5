@@ -20,8 +20,6 @@ class UserRepository {
             throw new Error('Error al buscar el usuario por email: ' + error.message)
         }
     }
-<<<<<<< HEAD
-=======
     async findUserById(user_id){
         try{
             const foundUser = await User.findById(user_id)
@@ -31,7 +29,17 @@ class UserRepository {
             throw new Error('Error al buscar el usuario por ID: ' + error.message)
         }
     }
->>>>>>> 396dcb3dd1135e683538e9518f8ee1deaf1e224f
+
+    async updateById(user_id, updateData){
+        try{
+            const updatedUser = await User.findByIdAndUpdate(user_id, updateData, { new: true })
+            return updatedUser
+        }
+        catch(error){
+            throw new Error('Error al actualizar el usuario: ' + error.message)
+        }
+    }
+
 }
 
 export default new UserRepository();

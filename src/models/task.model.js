@@ -18,10 +18,7 @@ const taskSchema = new mongoose.Schema({
     difficulty: {
         type: String,
         enum: ['EASY', 'MEDIUM', 'HARD'],
-<<<<<<< HEAD
-=======
         default:'EASY'
->>>>>>> 396dcb3dd1135e683538e9518f8ee1deaf1e224f
     },
     estimated_time_minutes: {
         type: Number,
@@ -31,11 +28,7 @@ const taskSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-<<<<<<< HEAD
-    finished_at: {
-=======
     finish_date: {
->>>>>>> 396dcb3dd1135e683538e9518f8ee1deaf1e224f
         type: Date,
     }
 })

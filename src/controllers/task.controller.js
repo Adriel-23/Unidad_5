@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 import ServerError from "../helpers/serverError.helper.js";
->>>>>>> 396dcb3dd1135e683538e9518f8ee1deaf1e224f
 import taskRepository from "../repositories/task.repository.js";
 
 class TaskController {
@@ -29,10 +26,6 @@ class TaskController {
             res.status(500).json({error: 'Error al crear la tarea: ' + error.message})
         }
     }
-<<<<<<< HEAD
-}
-
-=======
     async getTasksByMissionId(req, res){
         try{
             const mission_id = req.params.mission_id
@@ -180,5 +173,4 @@ class TaskController {
 }
 
 
->>>>>>> 396dcb3dd1135e683538e9518f8ee1deaf1e224f
 export default new TaskController();

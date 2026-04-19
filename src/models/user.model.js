@@ -9,7 +9,12 @@ const userSchema = new mongoose.Schema({
     },
     password: { 
         type: String, required: true 
-    }
+    },
+    email_verified: {
+            default: false,
+            required:true,
+            type: Boolean
+        }
 }, {
     timestamps: true
 })
