@@ -23,6 +23,15 @@ class MissionRepository {
             throw new Error('Error al buscar misiones por ID de usuario: ' + error.message)
         }
     }
+    async findMissionByID (missionId){
+        try{
+            const mission = await Mission.findById(missionId)
+            return mission
+        }
+        catch(error){
+            throw new Error('Error al buscar misión por ID: ' + error.message)
+        }
+    }
     async deleteMissionById(missionId){
         try{
             const deletedMission = await Mission.findByIdAndDelete(missionId)

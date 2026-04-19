@@ -1,6 +1,7 @@
 import ServerError from "../helpers/serverError.helper.js";
 import userRepository from "../repositories/user.repository.js";
 
+
 class AuthMiddleware {
     async validateUser(req, res, next){
         try{

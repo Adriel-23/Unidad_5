@@ -107,15 +107,17 @@ Deberá utilizar Postman u otro programa parecido para hacer peticiones HTPP. Co
     Deberá crear un archivo `.env` en la carpeta raíz del proyecto y agregar las siguientes variables:
 
     ```env
-    PORT=
-    MONGO_DB_URI=
-    MONGO_DB_NAME=
+    PORT= 8080
+    MONGO_DB_URI= mongodb+srv://<usuario>:<contraseña>@cluster0.mongodb.net/
+    MONGO_DB_NAME= Nombre_de_su_DB
+    JWT_SECRET_KEY= clave_hiper_mega_secreta_de_Pepito 
     ```
 
     En cada Variable luego del `=` se deberá llenar por las variables propias.
-    El PORT donde usted decida alojarlo.
-    El MONGO_DB_URI se llenará con el string que otorga MongoDB Atlas en su sección de conectar con la DB.
-    El MONGO_DB_NAME llevará el nombre que tiene su DB.
+    - **PORT**: El puerto donde usted decida alojarlo.(ej: 8080, 3000, 3001, etc).
+    - **MONGO_DB_URI**: Se llenará con el string que otorga MongoDB Atlas en su sección de conectar con la DB.
+    - **MONGO_DB_NAME**: Llevará el nombre que tiene su DB.
+    - **JWT_SECRET_KEY**: Puede ser cualquier palabra o frase secreta que usted elija. Esta se utilizará para encriptar los tokens de sesión.
 
 5. **Lanzar el servidor**
     Para poder correr el proyecto y utilizarlo para ponerlo a prueba se utiliza el siguiente comando en la *Terminal*:
@@ -129,13 +131,13 @@ Deberá utilizar Postman u otro programa parecido para hacer peticiones HTPP. Co
     - *Exito, MongoDB Conectado*
 
     En caso de que MongoDB no se conecte y la terminal de un error **querySrv ECONNREFUSED***(Fallo en la resolución de registros DNS SRV)*, no se preocupe y siga los siguientes pasos:
-    1. Diríjase a su Cluster de MongoDB Atlas
-    2. Vaya a la sección de conexión y seleccione 'Drivers'.
-    3. Dónde figura su string de conexión(el que empieza por *mongodb+srv://*) hay una opción *SRV Connection String* encendida por defecto, desactívela.
-    4. Ahora la string de conexión debió haber sido reemplazada por una un poco mas larga, copie esta string nueva y diríjase a su **.env**.
-    5. Reemplace el string que pegó anteriormente en la MONGO_DB_URI= por su nueva String(Solo después del =, no reemplace el nombre de la variable completa).
-    6. Una vez hecho eso puede ir a la terminal y reinicar el proceso de correr (Ctrl+C para frenar el programa, `clear` para limpiar la consola y por ultimo `npm run dev`).
-    7. Ya deberia funcionar sin problemas, y puede usted poner a prueba el programa.
+    - **paso 1**. Diríjase a su Cluster de MongoDB Atlas
+    - **paso 2**. Vaya a la sección de conexión y seleccione 'Drivers'.
+    - **paso 3**. Dónde figura su string de conexión(el que empieza por *mongodb+srv://*) hay una opción *SRV Connection String* encendida por defecto, desactívela.
+    - **paso 4**. Ahora la string de conexión debió haber sido reemplazada por una un poco mas larga, copie esta string nueva y diríjase a su **.env**.
+    - **paso 5**. Reemplace el string que pegó anteriormente en la MONGO_DB_URI= por su nueva String(Solo después del =, no reemplace el nombre de la variable completa).
+    - **paso 6**. Una vez hecho eso puede ir a la terminal y reinicar el proceso de correr (Ctrl+C para frenar el programa, `clear` para limpiar la consola y por ultimo `npm run dev`).
+    - **paso 7**. Ya deberia funcionar sin problemas, y puede usted poner a prueba el programa.
 
 6. **Hacer Peticiones HTTP**
     Una vez corriendo el programa puede abrir Postman o su programa de preferencia y crear peticiones a la siguiente URL:

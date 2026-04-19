@@ -29,6 +29,7 @@ class UserRepository {
             throw new Error('Error al buscar el usuario por ID: ' + error.message)
         }
     }
+<<<<<<< HEAD
 
     async updateById(user_id, updateData){
         try{
@@ -40,6 +41,8 @@ class UserRepository {
         }
     }
 
+=======
+>>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
 }
 
 export default new UserRepository();

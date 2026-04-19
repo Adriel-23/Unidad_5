@@ -20,6 +20,10 @@ missionRouter.get(
 missionRouter.delete(
     '/:user_id/:mission_id',
     authMiddleware.validateUser,
+<<<<<<< HEAD
+=======
+    missionMiddleware.checkMissionOwnership,
+>>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
     missionController.deleteMissionById
 )
 

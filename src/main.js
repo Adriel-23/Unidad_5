@@ -5,7 +5,10 @@ import missionRouter from './routes/mission.router.js';
 import authRouter from './routes/auth.router.js';
 import taskRouter from './routes/task.router.js';
 import errorHandling from './middlewares/errorHandling.middleware.js';
+<<<<<<< HEAD
 import mailTransporter from './config/mail.config.js';
+=======
+>>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
 
 
 connectMongoDB()

@@ -1,43 +1,53 @@
 import express from 'express';
 import taskController from '../controllers/task.controller.js';
+import taskMiddleware from '../middlewares/task.middleware.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
 
 const taskRouter = express.Router()
 
 taskRouter.post(
     '/:user_id/:mission_id',
-    (req, res) => { 
-        taskController.createTask(req, res) 
-    }
+    authMiddleware.validateUser,
+    taskMiddleware.validateStatusFormat,
+    taskController.createTask
 )
 taskRouter.get(
     '/:user_id/:mission_id',
-    (req, res) => {
-        taskController.getTasksByMissionId(req, res)
-    }
+    authMiddleware.validateUser,
+    taskMiddleware.validateTaskInMission,
+    taskController.getTasksByMissionId
+    
 )
 taskRouter.get(
     '/:user_id/detail/:task_id',
-    (req, res) => {
-        taskController.getDetailTaskById(req, res)
-    }
+    authMiddleware.validateUser,
+    taskMiddleware.validateTaskExistence,
+    taskController.getDetailTaskById
 )
 taskRouter.put(
     '/:user_id/:task_id',
-    (req, res)=> {
-        taskController.updateTask(req, res)
-    }
+    authMiddleware.validateUser,
+    taskMiddleware.validateTaskExistence,
+    taskController.updateTask
 )
 taskRouter.patch(
     '/:user_id/:task_id/status',
-    (req, res) => {
-        taskController.updateStatusAndFinishDate(req, res)
-    } 
+    authMiddleware.validateUser,
+    taskMiddleware.validateStatusFormat,
+    taskMiddleware.validateTaskExistence,
+    taskController.updateStatusAndFinishDate
 )
 taskRouter.delete(
     '/:user_id/:task_id',
+<<<<<<< HEAD
     (req, res) => {
         taskController.deleteTask(req, res)
     }
+=======
+    authMiddleware.validateUser,
+    taskMiddleware.validateTaskExistence,
+    taskController.deleteTask
+>>>>>>> c156026d6a506c86f0421a7c0ce85d230a59b69f
 )
 
 export default taskRouter;
