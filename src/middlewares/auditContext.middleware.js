@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 import logAction from '../services/audit.service.js';
-import { log } from 'console';
 
 function auditContextMiddleware(req, res, next) {
     if(req.path.startsWith('/api/auth/login') || req.path.startsWith('/api/auth/register')){
