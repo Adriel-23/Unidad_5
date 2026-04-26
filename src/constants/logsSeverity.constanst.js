@@ -1,0 +1,7 @@
+const LOG_SEVERITY = {
+    INFO: 'INFO',
+    WARNING: 'WARNING',
+    ERROR: 'ERROR',
+    CRITICAL: 'CRITICAL'
+}
+export default LOG_SEVERITY

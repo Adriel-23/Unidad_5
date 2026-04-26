@@ -1,149 +1,128 @@
-# Trabajo Práctico Final Integrador - Módulo 4: API de Lista de Tareas
+# Trabajo Práctico Final Integrador - Módulo 5 (Seguridad): API de Lista de Tareas
 
-## Objetivos del Proyecto:
+![Badge Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Badge Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![Badge MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 
-El proyecto consiste en desarrollar una API que permita gestionar un sistema de Misiones ligadas a Usuarios, donde dichas missiones tengan sus respectivas Tareas.
+## Objetivos del Proyecto
+
+El proyecto consiste en desarrollar una API RESTful escalable y segura que permita gestionar un sistema de **Misiones** ligadas a **Usuarios**, donde dichas misiones tengan sus respectivas **Tareas**. 
+
+En esta versión (Módulo 5), se ha implementado una capa robusta de **Seguridad**, incluyendo autenticación por Token JWT, limitador de peticiones (Rate Limiting), control de dominios mediante CORS, y un registro global de auditorías (Logging) en la base de datos.
 
 ### Jerarquía
+1. **Usuarios**: Administradores, Premium y Usuarios Gratuitos. Son los únicos dueños de las misiones y cuentan con roles definidos.
+2. **Misiones**: Cada misión es creada y controlada por su respectivo usuario. A su vez, estas tienen tareas ligadas.
+3. **Tareas**: Describen los pasos a seguir para lograr completar dicha misión a la que pertenecen.
 
+---
 
-1. **Usuarios**: *son los dueños de las misiones.*
-2. **Misiones**: *Cada mision la crea su respectivo usuario, a su vez estás tienen sus tareas ligadas.*
-3. **Tareas**: *Las tareas son aquellas que describen los pasos a seguir para lograr completar dicha mision a la que pertenecen.*
+## 🔒 Capa de Seguridad Implementada (Unidad 5)
 
-## Tecnologías Utilizadas
+- **Autenticación Bearer Token**: Las contraseñas se almacenan cifradas (Bcrypt) y el acceso a los endpoints protegidos se realiza enviando un JWT en el `Authorization` header (`Bearer <token>`).
+- **Verificación de Email**: Al registrarse, se envía un correo con un JWT temporal para validar la cuenta.
+- **Rate Limiting**: Limitador estricto para evitar ataques de fuerza bruta en el Login y abusos en los endpoints protegidos por usuario autenticado.
+- **CORS Blacklist & Whitelist**: La API bloquea activamente peticiones originadas desde dominios de Facebook y Google, y permite solo dominios de confianza.
+- **Auditoría Global**: Middleware implementado que registra en la base de datos de auditorías todas las peticiones a la API (Endpoint, método, severidad y el _id del usuario autenticado si aplica), excepto el login/registro.
 
-- **Node.js** y **Express** para el servidor.
-- **MongoDB** con **Mongoose** para la persistencia de datos.
-- **Yaak** para realizar peticiones HTTP y probar la API.
-- **Vercel** para el despliegue del proyecto en la nube.
+---
 
+## 📖 Documentación Swagger
 
-## Modelo de Datos
+Toda la documentación técnica e interactiva de la API puede probarse visualmente a través del portal de **Swagger UI**.
+
+**Ruta local:** `http://localhost:8080/docs`
+**Ruta Producción:** `{URI_DE_LA_APP}/docs`
+
+Allí encontrará los formatos de respuestas y manejo de errores (400, 401, 403, 404, 500) para absolutamente todos los endpoints.
+
+---
+
+## Modelos Principales
 
 ### Usuarios:
-
-Los Usuarios cuentan con opcion de Registrarse y de Iniciar Sesion.
-
-- **Registro**: Se solicita nombre, un email y una contraseña para crear su 'User' en la DB.
-- **Iniciar Sesion**: Con un User ya existente se le solicita, a quien desee iniciar sesion, los datos proporcionados en el registro a exepcion del nombre (email y contraseña).
+- **name**:  Nombre completo.
+- **email**: Único en el sistema.
+- **password**: Almacenada mediante hash unidireccional.
+- **role**: Nivel de permisos (`free`, `premium`, `admin`).
+- **verified**: Booleano que confirma estado de la verificación de email.
 
 ### Misiones:
-
-Las Misiones estan formadas por:
-
-- **fk_user_id**: Esta es la llave de vinculación con el usuario correspondiente a cada mision(user_id === fk_user_id).
-- **Titulo**: Es el Nombre principal que identifica a la misión. No es necesario que sea único.
-- **Descripcion**: Es opcional y en caso de tener, es una descripcion general de lo que se debe realizar en dicha Mision.
--**timestamps**: Posee un timestamps: true, lo que añade fecha de creacion de forma automática.
+- **fk_user_id**: Llave de vinculación con el usuario ocultada logicamente bajo Token.
+- **title**: Es el Nombre principal que identifica a la misión.
+- **description**: Descripción general de lo que se debe realizar.
 
 ### Tareas:
+- **fk_mission_id**: Misión a la que pertenece la tarea.
+- **description**: Una breve descripción de la tarea (obligatorio).
+- **status**: Define el estado en el que se encuentra (`PENDING`, `IN_PROGRESS`, `COMPLETED`).
+- **difficulty**: Nivel de dificultad.
+- **estimated_time_minutes**: Tiempo estimado en minutos.
+- **finish_date**: Fecha de finalización automática (en el momento en que el status se marca como COMPLETED).
 
-Las tareas tienen los siguientes campos:
+---
 
-- **fk_mission_id**: Llave de vinculación a la misión a la que pertenece la tarea (mission_id === fk_mission_id).
-- **description**: una breve descripción de la tarea (este campo es obligatorio).
-- **status**: Define el estado en el que se encuentra la tarea (PENDING, IN_PROGRESS, COMPLETED). Por defecto es PENDING, no se aceptará un estado "en proceso", "pendiente", etc. 
-- **difficulty**: Nivel de dificultad (EASY, MEDIUM, HARD). Igual que Status, por defecto EASY.
-- **estimated_time_minutes**: Tiempo estimado que tomará completar la tarea en minutos.
-- **created_at**: Fecha de creación automática al crear la tarea.
--**finish_date**: Fecha de finalización automática(en el momento en que el status es COMPLETED).
+## 🚀 Endpoints Implementados
 
-## Endpoints Implementados
+> **Importante:** Todos los endpoints (a excepción de Auth) esperan recibir un Header `Authorization` con un Bearer Token válido. ¡El `user_id` ya no se envía en la URL!
 
-### Autenticación:
+### Autenticación (`/api/auth`)
+| Método | Endpoint | Descripción | Body Requerido |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/register` | Crea al User y envía el email. | `name`, `email`, `password` |
+| `POST` | `/login` | Identifica al usuario y devuelve el JWT. | `email`, `password` |
+| `GET` | `/verify-email` | Verifica la cuenta con el token del email | `?verificationToken=` (Query string) |
 
-- **POST `/api/auth/register`**: Crea el registro del usuario haciendo petición de un `name`, `email` y por último `password`. Devuelve nombre, email, contraseña, _id de usuario, fecha de creación y de modificación.
-- **POST `/api/auth/login`**: Permite al usuario identificarse mediante el inicio de sesión haciendo uso de los datos proporcionados en el registro: `email` y `password`. No requiere `name`.
+### Misiones (`/api/missions`)
+*Sujeto al middleware de Rate Limit para el usuario autenticado.*
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/` | Devuelve una lista con todas las misiones del User autenticado. |
+| `POST` | `/` | Crea una misión ligada dinámicamente al ID en el Token. |
+| `DELETE` | `/:mission_id` | Elimina la misión específica y en cascada sus tareas *(Solo admins/premium).* |
 
-### Gestión de Misiones
+### Tareas (`/api/tasks`)
+*Sujeto al middleware de Rate Limit para el usuario autenticado.*
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/:mission_id` | Lista las tareas asignadas a dicha misión. |
+| `GET` | `/:task_id/detail` | Detalle específico de una tarea en concreto. |
+| `POST` | `/:mission_id` | Crea una tarea vinculada a la misión. |
+| `PUT` | `/:task_id` | Edita datos completos de la tarea *(Solo admins/premium).* |
+| `PATCH`| `/:task_id/status`| Modifica únicamente el status. Inserta auto. `finish_date`. |
+| `DELETE` | `/:task_id` | Elimina tarea del sistema *(Solo admins).* |
 
-- **POST `/api/missions/:user_id`**: Crea una misión asignada a un usuario.
-- **GET `/api/missions/:user_id`**: Devuele una lista con todas las misiones correspondientes al usuario solicitado.
-- **DELETE `/api/missions/:user_id/:mission_id`**: Elimina la mission junto a todas sus tareas vinculadas.
+---
 
-### Gestión de Tareas
+## 🛠 Instrucciones para Entorno Local de Desarrollo
 
-- **POST `/api/tasks/:user_id/:mission_id`**: Crea una tarea vinculada a una misión, o dentro de ella.
-- **GET `/api/tasks/:user_id/:mission_id`**: Devuelve una lista con todas las tareas asignadas a dicha misión.
-- **GET `/api/tasks/:user_id/detail/:task_id`**: Devuelve el detalle de una tarea en concreto.
-- **PUT `/api/tasks/:user_id/:task_id`**: Edita la descripción, la dificultad o el tiempo de una tarea en concreto.
-- **PATCH `/api/tasks/:user_id/:task_id/status`**: Cambia el estado de una tarea (PENDING, IN_PROGRESS, COMPLETED). Si el estado nuevo es `COMPLETED` el sistema asigna de forma automática la fecha y hora actual en `finish_date`.
-- **DELETE `/api/tasks/:user_id/:task_id`**: Elimina una única tarea especifica.
-
-## Instrucciones para usar los Endpoints desplegados:
-
-Deberá utilizar Postman u otro programa parecido para hacer peticiones HTPP. Como se indica en **EndPoints implementados** deberá realizar la peticion que desea utilizando como url la siguiente direccion:
- - **(Acá va la url de vercel)+`/api/auth/login`**
- - (este es un ejemplo para iniciar sesión) 
- Está ultima parte deberá modificarla dependiendo de donde quiera dirigirse. Los `/:User_id` y `/:mission_id` deberán ser reemplazados por la id otorgada por la DB al crear el usuario y una mision.
-
-## Instrucciones para correrlo Localmente:
-
-1. **Clonar el repositorio de GitHub**
-    Deberá abrir la terminal en su IDE de preferencia y ejecutar el siguiente comando:
-
+1. **Clonar el repositorio**
+    Abra la terminal en su IDE y ejecute:
     ```bash
     git clone https://github.com/Adriel-23/Integrador-Node.js-MongoDB.git
-    ```
-
-   Si no le agrada la idea de clonar, siempre está la opción de descargarlo desde este mismo enlace con formato .zip, extraerlo y abrir la carpeta con un IDE.
-
-2. **Ingresar a la carpeta del proyecto**
-    Asegurese de ingresar a la carpeta del proyecto utilizando el siguiente código:
-
-    ```bash
     cd Integrador-Node.js-MongoDB
     ```
 
-3. **Instalar Dependencias**
-    Una vez abierto el proyecto debe instalar las dependencias con el comando 
-
+2. **Instalar Dependencias**
     ```bash
     npm install
     ```
 
-4. **Configurar las Variables de Entorno**
-    Deberá crear un archivo `.env` en la carpeta raíz del proyecto y agregar las siguientes variables:
-
+3. **Variables de Entorno (`.env`)**
+    Cree un archivo `.env` en la raíz copiando la siguiente estructura:
     ```env
-    PORT= 8080
-    MONGO_DB_URI= mongodb+srv://<usuario>:<contraseña>@cluster0.mongodb.net/
-    MONGO_DB_NAME= Nombre_de_su_DB
-    JWT_SECRET_KEY= clave_hiper_mega_secreta_de_Pepito 
+    PORT=8080
+    MONGO_URI=mongodb+srv://<usuario>:<contraseña>@cluster0.mongodb.net/
+    JWT_SECRET_KEY=su_clave_secreta_aleatoria
+    MODE=dev
+    MAIL_USERNAME=su_email@gmail.com
+    MAIL_PASSWORD=su_password_de_aplicacion
+    URL_BACKEND=http://localhost:8080
     ```
 
-    En cada Variable luego del `=` se deberá llenar por las variables propias.
-    - **PORT**: El puerto donde usted decida alojarlo.(ej: 8080, 3000, 3001, etc).
-    - **MONGO_DB_URI**: Se llenará con el string que otorga MongoDB Atlas en su sección de conectar con la DB.
-    - **MONGO_DB_NAME**: Llevará el nombre que tiene su DB.
-    - **JWT_SECRET_KEY**: Puede ser cualquier palabra o frase secreta que usted elija. Esta se utilizará para encriptar los tokens de sesión.
-
-5. **Lanzar el servidor**
-    Para poder correr el proyecto y utilizarlo para ponerlo a prueba se utiliza el siguiente comando en la *Terminal*:
-
+4. **Lanzar el servidor**
     ```bash
     npm run dev
     ```
 
-    En la terminal deben aparecer dos mensajes:
-    - *Servidor escuchando en el puerto (Acá el puerto que ha otorgado en su .env)*
-    - *Exito, MongoDB Conectado*
-
-    En caso de que MongoDB no se conecte y la terminal de un error **querySrv ECONNREFUSED***(Fallo en la resolución de registros DNS SRV)*, no se preocupe y siga los siguientes pasos:
-    - **paso 1**. Diríjase a su Cluster de MongoDB Atlas
-    - **paso 2**. Vaya a la sección de conexión y seleccione 'Drivers'.
-    - **paso 3**. Dónde figura su string de conexión(el que empieza por *mongodb+srv://*) hay una opción *SRV Connection String* encendida por defecto, desactívela.
-    - **paso 4**. Ahora la string de conexión debió haber sido reemplazada por una un poco mas larga, copie esta string nueva y diríjase a su **.env**.
-    - **paso 5**. Reemplace el string que pegó anteriormente en la MONGO_DB_URI= por su nueva String(Solo después del =, no reemplace el nombre de la variable completa).
-    - **paso 6**. Una vez hecho eso puede ir a la terminal y reinicar el proceso de correr (Ctrl+C para frenar el programa, `clear` para limpiar la consola y por ultimo `npm run dev`).
-    - **paso 7**. Ya deberia funcionar sin problemas, y puede usted poner a prueba el programa.
-
-6. **Hacer Peticiones HTTP**
-    Una vez corriendo el programa puede abrir Postman o su programa de preferencia y crear peticiones a la siguiente URL:
-    http://localhost:(el puerto que eligió)/api/(la direccion donde desea hacer la petición).
-
-    Recuerde que las direcciones se encuentran disponibles en la sección **EndPoints Implementados** de este mismo archivo.
-
-Creado por:
-    Adriel Laflor
+> *Tip DNS SRV*: Si Mongoose arroja "querySrv ECONNREFUSED", desactive la opción "SRV Connection String" en MongoDB Atlas (o remueva el `+srv` y reemplace por el string puro) y reinicie el proyecto con Node.
