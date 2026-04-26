@@ -55,7 +55,7 @@ const taskRouter = express.Router()
  */
 taskRouter.post(
     '/:mission_id',
-    verifyAuthTokenMiddleware(['admin']),
+    verifyAuthTokenMiddleware(['admin', 'premium']),
     limiterMiddleware,
     taskMiddleware.validateStatusFormat,
     taskController.createTask
@@ -249,7 +249,7 @@ taskRouter.patch(
  */
 taskRouter.delete(
     '/:task_id',
-    verifyAuthTokenMiddleware(['admin']),
+    verifyAuthTokenMiddleware(['admin', 'premium']),
     limiterMiddleware,
     taskMiddleware.validateTaskExistence,
     taskController.deleteTask
