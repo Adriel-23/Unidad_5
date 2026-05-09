@@ -33,27 +33,25 @@ const blockedOrigins = [
     'https://facebook.com',
     'http://facebook.com',
 ]// http y https porque no sabemos desde donde se va a hacer la solicitud, para prevenir un salto en la blacklist. 
-/* const allowedOrigins = [
+const allowedOrigins = [
     'http://127.0.0.1:5500',
     'http://localhost:5173',
-    'https://mockup-zm-git-main-adriels-projects-9d966284.vercel.app',
-] */
+    'https://mockup-zm.vercel.app',
+    'https://mockup-zm-git-main-adriels-projects-9d966284.vercel.app'
+]
 app.use(
     cors({
         origin: (origin, callback) => {
-            if (blockedOrigins.includes(origin)) {
-
+            if (origin && blockedOrigins.includes(origin)) {
                 callback(new ServerError('Tu origen está bloqueado', 403))
             }
             else if (!origin && ENVIRONMENT.MODE == 'dev') {
-
                 callback(null, true)
             }
-            else if (!allowedOrigins.includes(origin)) {
+            else if (origin && !allowedOrigins.includes(origin)) {
                 callback(new ServerError('No tienes acceso a esta página', 403))
             }
             else {
-
                 callback(null, true)
             }
         }
