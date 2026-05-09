@@ -36,24 +36,24 @@ const blockedOrigins = [
 const allowedOrigins = [
     'http://127.0.0.1:5500',
     'http://localhost:5173',
-    
+    'https://mockup-zm-git-main-adriels-projects-9d966284.vercel.app'
 ]
 app.use(
     cors({
         origin: (origin, callback) => {
-            if(blockedOrigins.includes(origin)){
-                
+            if (blockedOrigins.includes(origin)) {
+
                 callback(new ServerError('Tu origen está bloqueado', 403))
             }
-            else if(!origin && ENVIRONMENT.MODE == 'dev'){
-                
+            else if (!origin && ENVIRONMENT.MODE == 'dev') {
+
                 callback(null, true)
             }
-            else if(!allowedOrigins.includes(origin)){
+            else if (!allowedOrigins.includes(origin)) {
                 callback(new ServerError('No tienes acceso a esta página', 403))
             }
-            else{
-                
+            else {
+
                 callback(null, true)
             }
         }
@@ -64,7 +64,7 @@ app.use(
 /* 
     Este es un middleware global que se encarga de revisar si el heaader de la petición es de tipo JSON.
 */
-app.use(express.json({limit: '5gb'}));
+app.use(express.json({ limit: '5gb' }));
 
 app.use(auditContextMiddleware)
 
