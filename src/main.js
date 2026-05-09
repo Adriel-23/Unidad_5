@@ -1,9 +1,10 @@
 import ENVIRONMENT from './config/environment.config.js';
 import connectMongoDB from './config/mongoDB.config.js';
 import express from 'express';
-import missionRouter from './routes/mission.router.js';
 import authRouter from './routes/auth.router.js';
-import taskRouter from './routes/task.router.js';
+import productRouter from './routes/product.router.js';
+import userRouter from './routes/user.router.js';
+import orderRouter from './routes/order.router.js';
 import errorHandling from './middlewares/errorHandling.middleware.js';
 import mailTransporter from './config/mail.config.js';
 import statusRouter from './routes/status.router.js';
@@ -34,6 +35,8 @@ const blockedOrigins = [
 ]// http y https porque no sabemos desde donde se va a hacer la solicitud, para prevenir un salto en la blacklist. 
 const allowedOrigins = [
     'http://127.0.0.1:5500',
+    'http://localhost:5173',
+    
 ]
 app.use(
     cors({
@@ -66,9 +69,10 @@ app.use(express.json({limit: '5gb'}));
 app.use(auditContextMiddleware)
 
 app.use('/api/status', statusRouter);
-app.use('/api/missions', missionRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/tasks', taskRouter)
+app.use('/api/products', productRouter);
+app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 
 app.use(errorHandling);

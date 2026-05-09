@@ -19,7 +19,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['free','premium', 'admin'],
         default: 'free'
-    }
+    },
+    favorites: [{
+        type: String,
+        ref: 'Product'
+    }],
+    cart: [{
+        product: {
+            type: String,
+            ref: 'Product'
+        },
+        quantity: {
+            type: Number,
+            default: 1
+        }
+    }]
 }, {
     timestamps: true
 })
